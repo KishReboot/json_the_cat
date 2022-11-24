@@ -1,17 +1,21 @@
 const request = require('request');
 
-const catBreed = process.argv[2];
-const catURL = `https://api.thecataps.com/v1/breeds/search?q=${catBreed}`;
+const fetchBreedDescription = function(catBreed, callback) {
 
-request(catURL, (error, response, body) => {
+  const catURL = `https://api.thecatapi.com/v1/breeds/search?q=${catBreed}`;
 
-  if (error) return console.log(`The request failed: ${error}`);
+  request(catURL, (error, response, body) => {
+
+    if (error) callback(`The request failed: ${error}`, null);
   
-  const data = JSON.parse(body);
+    const data = JSON.parse(body);
   
-  const breed = data[0];
+    const breed = data[0];
 
-  if (breed) console.log(breed.description);
-  else console.log(`Are you sure ${catBreed} is correct?`);
+    if (breed) callback(null, breed.description);
+    else callback(`Are you sure ${catBreed} is correct?`, null);
 
-});
+  });
+};
+
+module.exports = { fetchBreedDescription };
